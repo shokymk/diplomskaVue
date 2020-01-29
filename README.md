@@ -1,4 +1,4 @@
-# jwt-try2
+# Event platform frontend app
 
 ## Project setup
 ```
