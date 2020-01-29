@@ -2,19 +2,19 @@
   <div class="submit-form">
     <div v-if="!submitted">
       <div class="form-group">
-        <label for="title">Title</label>
+        <label for="name">Event name</label>
         <input
           type="text"
           class="form-control"
-          id="title"
+          id="name"
           required
-          v-model="event.title"
-          name="title"
+          v-model="event.name"
+          name="name"
         />
       </div>
 
       <div class="form-group">
-        <label for="description">datetime</label>
+        <label for="timeofevent">Time and date of event</label>
         <datetime type="datetime"
          input-class="form-control"
          v-model="event.date"
@@ -34,6 +34,15 @@
         />
       </div>
 
+     <div class="form-group">
+        <label for="tags">Tags</label>
+        <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            @tags-changed="newTags => tags = newTags"
+         />
+      </div>
+
       <button @click="saveevent" class="btn btn-success">Submit</button>
     </div>
 
@@ -48,35 +57,43 @@
 import eventDataService from "../services/eventDataService";
 import { Datetime } from 'vue-datetime';
 import 'vue-datetime/dist/vue-datetime.css'
+import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   name: "add-event",
   data() {
     return {
       event: {
-        id: null,
-        title: "",
+        name: "",
         description: "",
-        date: "",
-        published: false
+        date: ""    
       },
+      tag: "",
+      tags:[],
       submitted: false
     };
   },
   methods: {
+    
     saveevent() {
+      var stringTags = this.tags.map((value) => {
+          return value.text
+        })
+      
+      console.log(stringTags);
       var data = {
-        title: this.event.title,
+        name: this.event.name,
         description: this.event.description,
-        date: this.event.date
+        dateScheduled: this.event.date,
+        tags: stringTags
       };
-
+      
       this.$validator.validateAll().then(valid => {
         if(valid) {
         eventDataService.create(data)
         .then(response => {
           this.event.id = response.data.id;
-          console.log(response.data);
+          // console.log(response.data);
           this.submitted = true;
         })
         .catch(e => {
@@ -93,17 +110,20 @@ export default {
     newevent() {
       this.submitted = false;
       this.event = {};
+      this.tags = {};
+      this.tag = "";
     }
   },
   components: {
-    datetime: Datetime
+    datetime: Datetime,
+    VueTagsInput
   }
 };
 </script>
 
 <style>
 .submit-form {
-  max-width: 300px;
+  max-width: 600px;
   margin: auto;
 }
 </style>

@@ -17,7 +17,7 @@ class EventDataService {
   }
 
   create(data) {
-    return axios.post("/events", data);
+    return axios.post(API_URL + "events/addEvent", data, {headers: authHeader()});
   }
 
   update(id, data) {
