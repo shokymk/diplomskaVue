@@ -22,19 +22,15 @@
           :key="index"
           @click="setActiveEvent(event, index)"
         >
-          {{ event.title }}
+          <h3>{{ event.name }}</h3>
         </li>
       </ul>
-
-      <button class="m-3 btn btn-sm btn-danger" @click="removeAllevents">
-        Remove All
-      </button>
     </div>
     <div class="col-md-6">
       <div v-if="currentevent">
-        <h4>event</h4>
+        <h4>Event</h4>
         <div>
-          <label><strong>Title:</strong></label> {{ currentevent.title }}
+          <label><strong>Title:</strong></label> {{ currentevent.name }}
         </div>
         <div>
           <label><strong>Description:</strong></label><br> <label style='white-space: pre-wrap'> {{ currentevent.description }} </label>
@@ -103,16 +99,15 @@ export default {
       this.currentIndex = index;
     },
 
-    removeAllevents() {
-      eventDataService.deleteAll()
-        .then(response => {
-          console.log(response.data);
-          this.refreshList();
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
+    // removeAllevents() {
+    //   eventDataService.deleteAll()
+    //     .then(response => {
+    //       this.refreshList();
+    //     })
+    //     .catch(e => {
+    //       console.log(e);
+    //     });
+    // },
     
     searchTitle() {
       eventDataService.findByTitle(this.title)

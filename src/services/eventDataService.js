@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8080/api/';
 
 class EventDataService {
   getAll() {
-    return axios.get(API_URL + "events/list");
+    return axios.get(API_URL + "events/list", { headers: authHeader() });
   }
 
   getTrackedEvents() {
