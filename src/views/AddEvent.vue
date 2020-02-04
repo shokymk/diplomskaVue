@@ -12,6 +12,17 @@
           name="name"
         />
       </div>
+      <div class="form-group">
+        <label for="name">Event picture</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          required
+          v-model="event.imgUrl"
+          name="name"
+        />
+      </div>
 
       <div class="form-group">
         <label for="timeofevent">Time and date of event</label>
@@ -66,7 +77,8 @@ export default {
       event: {
         name: "",
         description: "",
-        date: ""    
+        date: "",
+        imgUrl: ""    
       },
       tag: "",
       tags:[],
@@ -85,6 +97,7 @@ export default {
         name: this.event.name,
         description: this.event.description,
         dateScheduled: this.event.date,
+        imgUrl: this.event.imgUrl,
         tags: stringTags
       };
       
@@ -110,7 +123,7 @@ export default {
     newevent() {
       this.submitted = false;
       this.event = {};
-      this.tags = {};
+      this.tags = [];
       this.tag = "";
     }
   },

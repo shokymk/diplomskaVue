@@ -20,6 +20,9 @@ class EventDataService {
     return axios.post(API_URL + "events/addEvent", data, {headers: authHeader()});
   }
 
+  getByTag(tag){
+    return axios.get(API_URL + `events/byTags/${tag}`);
+  }
   update(id, data) {
     return axios.put(`/events/${id}`, data);
   }

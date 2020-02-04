@@ -22,7 +22,8 @@
           :key="index"
           @click="setActiveEvent(event, index)"
         >
-          <h3>{{ event.name }}</h3>
+        <img :src='event.imgUrl' class="imgThumb float-left imgThumb"/> 
+          {{ event.name }}
         </li>
       </ul>
     </div>
@@ -30,13 +31,21 @@
       <div v-if="currentevent">
         <h4>Event</h4>
         <div>
+          <img :src='currentevent.imgUrl' class="img-fluid"/>
+        </div>
+        <div>
           <label><strong>Title:</strong></label> {{ currentevent.name }}
         </div>
         <div>
           <label><strong>Description:</strong></label><br> <label style='white-space: pre-wrap'> {{ currentevent.description }} </label>
         </div>
         <div>
-          <label><strong>Status:</strong></label> {{ currentevent.published ? "Published" : "Pending" }}
+          <label><strong>Tags:</strong></label><br>
+          <div class="tag" v-for="tag in currentevent.tags" :key="tag">
+            <button class="btn btn-info" @click="eventsByTag(tag)">
+            <i v-bind:class="'material-icons'">{{tag}}</i>
+    </button>           
+</div>
         </div>
         <div>
           <label><strong>Date:</strong></label> {{ formattedDate(currentevent.date) }}
@@ -45,7 +54,7 @@
 
         </div>
 
-        <a class="badge badge-warning"
+        <a class="badge"
           :href="'/events/' + currentevent.id"
         >
           Edit
@@ -74,6 +83,17 @@ export default {
     };
   },
   methods: {
+    eventsByTag(tag) {
+      console.log(tag);
+      eventDataService.getByTag(tag)
+        .then(response => {
+          this.events = response.data;
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
     retrieveevents() {
       eventDataService.getAll()
         .then(response => {
@@ -127,9 +147,17 @@ export default {
 </script>
 
 <style>
+.imgThumb{
+  width: 30%;
+  margin: 3px;
+}
 .list {
   text-align: left;
   max-width: 1150px;
   margin: auto;
+}
+.tag {
+  display: inline-block;
+  margin: 2px;
 }
 </style>
