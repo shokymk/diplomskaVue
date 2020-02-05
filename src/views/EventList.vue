@@ -2,27 +2,44 @@
   <div class="list row">
     <div class="col-md-8">
       <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Search by title"
-          v-model="title"/>
+        <input type="text" class="form-control" :placeholder="placeholderSearch" v-model="searchedTerm" />
         <div class="input-group-append">
-          <button class="btn btn-outline-secondary" type="button"
-            @click="searchTitle"
-          >
-            Search
-          </button>
+          <button class="btn btn-outline-secondary" type="button" @click="searchTitle">Search</button>
+          <button class="btn btn-outline-secondary" type="button" @click="clearSearch">Clear</button>
         </div>
       </div>
     </div>
+    <div class="col-md-8">
+      Search by :
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active" >
+          <input type="radio" name="searchBy" id="byTitle" value="Title" autocomplete="off" checked v-on:click="changeSearch('Title')" />
+           Title
+        </label>
+        <label class="btn btn-secondary" >
+          <input type="radio" name="searchBy" id="byTag" value= "Tag" autocomplete="off" v-on:click="changeSearch('Tag')"/>
+           Tag
+        </label>
+        <label class="btn btn-secondary" >
+          <input type="radio" name="searchBy" id="byCategory" value="Category" autocomplete="off" v-on:click="changeSearch('Category')"/>
+           Category
+        </label>
+        <label class="btn btn-secondary" >
+          <input type="radio" name="searchBy" id="byDate" value="Date" autocomplete="off" v-on:click="changeSearch('Date')"/> Date
+        </label>
+      </div>
+    </div>
     <div class="col-md-6">
-      <h4>events List</h4>
+      <h4>Events List</h4>
       <ul class="list-group">
-        <li class="list-group-item"
+        <li
+          class="list-group-item"
           :class="{ active: index == currentIndex }"
           v-for="(event, index) in events"
           :key="index"
           @click="setActiveEvent(event, index)"
         >
-        <img :src='event.imgUrl' class="imgThumb float-left imgThumb"/> 
+          <img :src="event.imgUrl" class="imgThumb float-left" />
           {{ event.name }}
         </li>
       </ul>
@@ -31,34 +48,43 @@
       <div v-if="currentevent">
         <h4>Event</h4>
         <div>
-          <img :src='currentevent.imgUrl' class="img-fluid"/>
+          <img :src="currentevent.imgUrl" class="img-fluid" />
         </div>
         <div>
-          <label><strong>Title:</strong></label> {{ currentevent.name }}
+          <label>
+            <strong>Title:</strong>
+          </label>
+          {{ currentevent.name }}
         </div>
         <div>
-          <label><strong>Description:</strong></label><br> <label style='white-space: pre-wrap'> {{ currentevent.description }} </label>
+          <label>
+            <strong>Description:</strong>
+          </label>
+          <br />
+          <label style="white-space: pre-wrap">{{ currentevent.description }}</label>
         </div>
         <div>
-          <label><strong>Tags:</strong></label><br>
+          <label>
+            <strong>Tags:</strong>
+          </label>
+          <br />
           <div class="tag" v-for="tag in currentevent.tags" :key="tag">
             <button class="btn btn-info" @click="eventsByTag(tag)">
-            <i v-bind:class="'material-icons'">{{tag}}</i>
-    </button>           
-</div>
+              <i v-bind:class="'material-icons'">{{tag}}</i>
+            </button>
+          </div>
         </div>
         <div>
-          <label><strong>Date:</strong></label> {{ formattedDate(currentevent.date) }}
+          <label>
+            <strong>Date:</strong>
+          </label>
+          {{ formattedDate(currentevent.date) }}
         </div>
-        <div>
-
-        </div>
-
-        <a class="badge"
-          :href="'/events/' + currentevent.id"
-        >
-          Edit
-        </a>
+        <div></div>
+        
+        <button v-if="currentevent.isTracked" class="btn btn-outline-dark" >Untrack event</button>
+        
+        <button v-else class="btn btn-outline-dark" >Track event</button>
       </div>
       <div v-else>
         <br />
@@ -70,7 +96,7 @@
 
 <script>
 import eventDataService from "../services/eventDataService";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   name: "events-list",
@@ -79,13 +105,17 @@ export default {
       events: [],
       currentevent: null,
       currentIndex: -1,
-      title: ""
+      title: "",
+      searchedTerm: "",
+      placeholderSearch: "Search by Title",
+      searchBy: "Title"
     };
   },
   methods: {
     eventsByTag(tag) {
       console.log(tag);
-      eventDataService.getByTag(tag)
+      eventDataService
+        .getByTag(tag)
         .then(response => {
           this.events = response.data;
           console.log(response.data);
@@ -94,8 +124,14 @@ export default {
           console.log(e);
         });
     },
+    changeSearch(val) {
+      console.log(val);
+      this.searchBy = val;
+      this.placeholderSearch = "Search by " + val;
+    },
     retrieveevents() {
-      eventDataService.getAll()
+      eventDataService
+        .getAll()
         .then(response => {
           this.events = response.data;
           console.log(response.data);
@@ -105,8 +141,8 @@ export default {
         });
     },
     formattedDate(date) {
-      console.log(moment(date).format('MMMM Do YYYY, h:mm:ss a'));
-      return moment(date).format('MMMM Do YYYY, h:mm:ss a')
+      console.log(moment(date).format("MMMM Do YYYY, h:mm:ss a"));
+      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
     },
     refreshList() {
       this.retrieveevents();
@@ -119,18 +155,10 @@ export default {
       this.currentIndex = index;
     },
 
-    // removeAllevents() {
-    //   eventDataService.deleteAll()
-    //     .then(response => {
-    //       this.refreshList();
-    //     })
-    //     .catch(e => {
-    //       console.log(e);
-    //     });
-    // },
-    
     searchTitle() {
-      eventDataService.findByTitle(this.title)
+      if (this.searchBy=="Title"){
+      eventDataService
+        .findByTitle(this.searchedTerm)
         .then(response => {
           this.events = response.data;
           console.log(response.data);
@@ -138,16 +166,24 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    }
+      }
+      if (this.searchBy=="Tag") {
+        this.eventsByTag(this.searchedTerm);
+      }
+    },
+      clearSearch(){
+      this.retrieveevents();
+  }
   },
+
   mounted() {
-    this.retrieveevents();
+    this.refreshList();
   }
 };
 </script>
 
 <style>
-.imgThumb{
+.imgThumb {
   width: 30%;
   margin: 3px;
 }

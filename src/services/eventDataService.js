@@ -23,6 +23,10 @@ class EventDataService {
   getByTag(tag){
     return axios.get(API_URL + `events/byTags/${tag}`);
   }
+  
+  findByTitle(title) {
+    return axios.get(API_URL + `events/search/byTitle?title=${title}`);
+  }
   update(id, data) {
     return axios.put(`/events/${id}`, data);
   }
@@ -35,9 +39,6 @@ class EventDataService {
     return axios.delete(`/events`);
   }
 
-  findByTitle(title) {
-    return axios.get(`/events?title=${title}`);
-  }
   
 }
 

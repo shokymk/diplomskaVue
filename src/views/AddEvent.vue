@@ -92,7 +92,6 @@ export default {
           return value.text
         })
       
-      console.log(stringTags);
       var data = {
         name: this.event.name,
         description: this.event.description,
