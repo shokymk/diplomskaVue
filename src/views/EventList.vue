@@ -41,6 +41,8 @@
         >
           <img :src="event.imgUrl" class="imgThumb float-left" />
           {{ event.name }}
+          <br>
+          {{ formattedDate(event.date)}}
         </li>
       </ul>
     </div>
@@ -88,7 +90,7 @@
       </div>
       <div v-else>
         <br />
-        <p>Please click on a event...</p>
+        <p>Please click on an event...</p>
       </div>
     </div>
   </div>
@@ -141,8 +143,8 @@ export default {
         });
     },
     formattedDate(date) {
-      console.log(moment(date).format("MMMM Do YYYY, h:mm:ss a"));
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
+      console.log(moment(date).format("MMMM Do YYYY, h:mm a"));
+      return moment(date).format("MMMM Do YYYY, h:mm a");
     },
     refreshList() {
       this.retrieveevents();
@@ -172,7 +174,8 @@ export default {
       }
     },
       clearSearch(){
-      this.retrieveevents();
+      this.refreshList();
+
   }
   },
 
