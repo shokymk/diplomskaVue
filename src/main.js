@@ -5,6 +5,7 @@ import store from './store';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import VeeValidate from 'vee-validate';
+import vSelect from 'vue-select'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
@@ -14,6 +15,8 @@ import {
   faSignInAlt,
   faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
+import 'vue-select/dist/vue-select.css';
+
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
@@ -21,6 +24,7 @@ Vue.config.productionTip = false;
 
 Vue.use(VeeValidate);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component('v-select', vSelect)
 
 new Vue({
   router,

@@ -2,7 +2,15 @@
   <div class="list row">
     <div class="col-md-8">
       <div class="input-group mb-3">
+        <div style="width:80%;" v-if="searchBy=='Category'">
+          <v-select v-model="searchedTerm" name="category" :options="['Music', 'Culture', 'Education',
+          'Causes', 'Sports' ]"
+          :searchable="false"
+        ></v-select>
+        </div>
+        <div v-else style="width:80%;">
         <input type="text" class="form-control" :placeholder="placeholderSearch" v-model="searchedTerm" />
+        </div>
         <div class="input-group-append">
           <button class="btn btn-outline-secondary" type="button" @click="searchTitle">Search</button>
           <button class="btn btn-outline-secondary" type="button" @click="clearSearch">Clear</button>
@@ -115,7 +123,6 @@ export default {
   },
   methods: {
     eventsByTag(tag) {
-      console.log(tag);
       eventDataService
         .getByTag(tag)
         .then(response => {
@@ -126,9 +133,19 @@ export default {
           console.log(e);
         });
     },
+    eventsByCategory(category) {
+      eventDataService.getByCategory(category)
+      .then(response => {
+        this.events = response.data;
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    },
     changeSearch(val) {
       console.log(val);
       this.searchBy = val;
+      this.searchedTerm="";
       this.placeholderSearch = "Search by " + val;
     },
     retrieveevents() {
@@ -171,6 +188,9 @@ export default {
       }
       if (this.searchBy=="Tag") {
         this.eventsByTag(this.searchedTerm);
+      }
+      if (this.searchBy=="Category") {
+        this.eventsByCategory(this.searchedTerm);
       }
     },
       clearSearch(){

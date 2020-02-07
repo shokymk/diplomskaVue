@@ -44,7 +44,18 @@
           name="description"
         />
       </div>
-
+      <div class="form-group">
+        <label for="category">Category</label>
+        <v-select
+          rows="5"
+          required
+          v-model="event.category"
+          name="category"
+          :options="['Music', 'Culture', 'Education',
+          'Causes', 'Sports' ]"
+          :searchable="false"
+        ></v-select>
+      </div>
      <div class="form-group">
         <label for="tags">Tags</label>
         <vue-tags-input
@@ -78,6 +89,7 @@ export default {
         name: "",
         description: "",
         date: "",
+        category: "",
         imgUrl: ""    
       },
       tag: "",
@@ -97,6 +109,7 @@ export default {
         description: this.event.description,
         dateScheduled: this.event.date,
         imgUrl: this.event.imgUrl,
+        category: this.event.category,
         tags: stringTags
       };
       

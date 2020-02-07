@@ -21,7 +21,11 @@ class EventDataService {
   }
 
   getByTag(tag){
-    return axios.get(API_URL + `events/byTags/${tag}`);
+    return axios.get(API_URL + `events/search/byTags/${tag}`);
+  }
+
+  getByCategory(category){
+    return axios.get(API_URL + `events/search/byCategory?category=${category}`);
   }
   
   findByTitle(title) {
