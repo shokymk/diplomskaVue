@@ -94,7 +94,7 @@
         
         <button v-if="currentevent.isTracked" class="btn btn-outline-dark" >Untrack event</button>
         
-        <button v-else class="btn btn-outline-dark" >Track event</button>
+        <button v-else class="btn btn-outline-dark" @click="trackEvent()">Track event</button>
       </div>
       <div v-else>
         <br />
@@ -193,9 +193,20 @@ export default {
         this.eventsByCategory(this.searchedTerm);
       }
     },
+    trackEvent() {
+      eventDataService
+        .trackEvent({
+          "id": this.currentevent.id})
+                .then(response => {
+          console.log(response.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+  
+    },
       clearSearch(){
       this.refreshList();
-
   }
   },
 

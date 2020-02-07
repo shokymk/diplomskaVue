@@ -31,6 +31,11 @@ class EventDataService {
   findByTitle(title) {
     return axios.get(API_URL + `events/search/byTitle?title=${title}`);
   }
+  
+  trackEvent(eventId) {
+    console.log(eventId);
+    return axios.post(API_URL +"events/trackEvent", eventId, {headers: authHeader()});
+  }
   update(id, data) {
     return axios.put(`/events/${id}`, data);
   }
@@ -43,7 +48,6 @@ class EventDataService {
     return axios.delete(`/events`);
   }
 
-  
 }
 
 export default new EventDataService();
