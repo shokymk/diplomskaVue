@@ -8,12 +8,9 @@
             <font-awesome-icon icon="home" /> Events
           </a>
         </li>
-        <!-- <li class="nav-item" v-if="showAdminBoard">
-          <a href="/admin" class="nav-link">Admin Board</a>
-        </li>
-        <li class="nav-item" v-if="showModeratorBoard">
-          <a href="/mod" class="nav-link">Moderator Board</a>
-        </li>-->
+        <li class="nav-item">
+          <a href="/trackedEvents" class="nav-link" v-if="currentUser">Tracked Events</a>
+        </li> 
         <li class="nav-item">
           <a href="/addEvent" class="nav-link" v-if="currentUser">Add Event</a>
         </li> 
@@ -59,21 +56,6 @@ export default {
     currentUser() {
       return this.$store.state.auth.user;
     }
-    // ,
-    // showAdminBoard() {
-    //   if (this.currentUser) {
-    //     return this.currentUser.roles.includes('ROLE_ADMIN');
-    //   }
-
-    //   return false;
-    // },
-    // showModeratorBoard() {
-    //   if (this.currentUser) {
-    //     return this.currentUser.roles.includes('ROLE_MODERATOR');
-    //   }
-
-    //   return false;
-    // }
   },
   methods: {
     logOut() {

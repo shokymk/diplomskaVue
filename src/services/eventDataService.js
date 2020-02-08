@@ -36,6 +36,12 @@ class EventDataService {
     console.log(eventId);
     return axios.post(API_URL +"events/trackEvent", eventId, {headers: authHeader()});
   }
+  untrackEvent(eventId) {
+    return axios.post(API_URL +"events/untrackEvent", eventId, {headers: authHeader()});
+  }
+  isEventTracked(eventId) {
+    return axios.get(API_URL +`events/isTracked/?eventId=${eventId}`, {headers: authHeader()} );
+  }
   update(id, data) {
     return axios.put(`/events/${id}`, data);
   }
