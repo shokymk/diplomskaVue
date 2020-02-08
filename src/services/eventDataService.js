@@ -27,7 +27,9 @@ class EventDataService {
   getByCategory(category){
     return axios.get(API_URL + `events/search/byCategory?category=${category}`);
   }
-  
+  getByUser(username) {
+    return axios.get(API_URL + `events/search/byUser/${username}`);
+  }
   findByTitle(title) {
     return axios.get(API_URL + `events/search/byTitle?title=${title}`);
   }

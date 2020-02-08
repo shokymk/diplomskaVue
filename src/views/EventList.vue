@@ -112,6 +112,14 @@
         </div>
         <div>
           <label>
+            <strong>Organized by:</strong>
+          </label>
+          <button style="margin-left:10px;" class="btn btn-info" @click="eventsByUser(currentevent.organizedBy)">
+              <i v-bind:class="'material-icons'">{{ currentevent.organizedBy }}</i>
+            </button>
+        </div>
+        <div>
+          <label>
             <strong>Description:</strong>
           </label>
           <br />
@@ -136,6 +144,7 @@
         </div>
 
         <button
+         style="float:right;"
           v-if="currentevent.isTracked"
           class="btn btn-outline-dark"
           @click="untrackEvent()"
@@ -183,6 +192,17 @@ export default {
     eventsByCategory(category) {
       eventDataService
         .getByCategory(category)
+        .then(response => {
+          this.events = response.data;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    eventsByUser(username) {
+      console.log("here");
+       eventDataService
+        .getByUser(username)
         .then(response => {
           this.events = response.data;
         })
