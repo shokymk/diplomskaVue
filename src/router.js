@@ -42,6 +42,11 @@ export const router = new Router({
       name: 'add-event',
       // lazy-loaded
       component: () => import('./views/AddEvent.vue')
+    },
+    {
+      path: '/event/:id',
+      name: "event-details",
+      component: () => import("./views/Event.vue")
     }
 
   ]

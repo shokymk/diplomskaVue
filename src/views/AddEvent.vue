@@ -17,7 +17,7 @@
         <input
           type="text"
           class="form-control"
-          id="name"
+          id="picture"
           required
           v-model="event.imgUrl"
           name="name"

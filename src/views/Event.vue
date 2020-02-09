@@ -1,67 +1,117 @@
 <template>
-  <div v-if="currentEvent" class="edit-form">
+  <!-- <div v-if="currentEvent" class="edit-form"> -->
+    <div class="edit-form">
+    <div v-if="!submitted">
     <h4>Event</h4>
     <form>
       <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" id="title"
-          v-model="currentEvent.title"
+        <label for="name">Event name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          required
+          v-model="currentEvent.name"
+          name="name"
         />
       </div>
+      <div class="form-group">
+        <label for="name">Event picture</label>
+        <input
+          type="text"
+          class="form-control"
+          id="picture"
+          required
+          v-model="currentEvent.imgUrl"
+          name="name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="timeofevent">Time and date of event</label>
+        <datetime type="datetime"
+         input-class="form-control"
+         v-model="currentEvent.dateScheduled"
+         ></datetime>
+         <input type="hidden" name="date" v-validate="'required'" v-model="currentEvent.dateScheduled">
+      </div>
+
       <div class="form-group">
         <label for="description">Description</label>
-        <input type="text" class="form-control" id="description"
+        <textarea
+          class="form-control"
+          rows="5"
+          id="description"
+          required
           v-model="currentEvent.description"
+          name="description"
         />
       </div>
-
       <div class="form-group">
-        <label><strong>Status:</strong></label>
-        {{ currentEvent.published ? "Published" : "Pending" }}
+        <label for="category">Category</label>
+        <v-select
+          rows="5"
+          required
+          v-model="currentEvent.category"
+          name="category"
+          :options="['Music', 'Culture', 'Education',
+          'Causes', 'Sports' ]"
+          :searchable="false"
+        ></v-select>
       </div>
+     <div class="form-group">
+        <label for="tags">Tags</label>
+        <vue-tags-input
+            v-model="tag"
+            :tags="tags"
+            @tags-changed="newTags => tags = newTags"
+         />
+      </div>
+
     </form>
 
-    <button class="badge badge-primary mr-2"
-      v-if="currentEvent.published"
-      @click="updatePublished(false)"
-    >
-      UnPublish
-    </button>
-    <button v-else class="badge badge-primary mr-2"
-      @click="updatePublished(true)"
-    >
-      Publish
-    </button>
-
     <button class="badge badge-danger mr-2"
-      @click="deleteevent"
+      @click="deleteEvent"
     >
       Delete
     </button>
 
     <button type="submit" class="badge badge-success"
-      @click="updateevent"
+      @click="updateEvent"
     >
       Update
     </button>
     <p>{{ message }}</p>
-  </div>
+    </div>
 
-  <div v-else>
-    <br />
-    <p>Please click on a event...</p>
-  </div>
+    <div v-else>
+      <h4>You submitted successfully!</h4>
+      <button class="btn btn-success" @click="backToProfile">Back to profile</button>
+    </div>
+    </div>
 </template>
 
 <script>
 import eventDataService from "../services/eventDataService";
+import { Datetime } from 'vue-datetime';
+import 'vue-datetime/dist/vue-datetime.css'
+import VueTagsInput from '@johmun/vue-tags-input';
 
 export default {
   name: "event",
   data() {
     return {
-      currentEvent: null,
-      message: ''
+      message: '',
+      currentEvent: {
+        name: "",
+        description: "",
+        dateScheduled: "",
+        category: "",
+        imgUrl: ""    
+      },
+      tag: "",
+      tags:[],
+      submitted: false
     };
   },
   methods: {
@@ -70,34 +120,35 @@ export default {
         .then(response => {
           this.currentEvent = response.data;
           console.log(response.data);
+          this.currentEvent.tags.forEach(element => {
+            this.tags.push({
+              "text" : element,
+              "tiClasses" : ["ti-valid"]
+            })
+          });
         })
         .catch(e => {
           console.log(e);
         });
     },
-
-    updatePublished(status) {
+    updateEvent() {
+      var stringTags = this.tags.map((value) => {
+          return value.text
+        })
+      
       var data = {
         id: this.currentEvent.id,
-        title: this.currentEvent.title,
+        name: this.currentEvent.name,
         description: this.currentEvent.description,
-        published: status
+        dateScheduled: this.currentEvent.dateScheduled,
+        imgUrl: this.currentEvent.imgUrl,
+        category: this.currentEvent.category,
+        tags: stringTags
       };
-
-      eventDataService.update(this.currentEvent.id, data)
-        .then(response => {
-          this.currentEvent.published = response.data.published;
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-
-    updateEvent() {
-      eventDataService.update(this.currentEvent.id, this.currentEvent)
+      eventDataService.update(data)
         .then(response => {
           console.log(response.data);
+          this.submitted = true;
           this.message = 'The event was updated successfully!';
         })
         .catch(e => {
@@ -105,7 +156,7 @@ export default {
         });
     },
 
-    deleteevent() {
+    deleteEvent() {
       eventDataService.delete(this.currentEvent.id)
         .then(response => {
           console.log(response.data);
@@ -114,18 +165,24 @@ export default {
         .catch(e => {
           console.log(e);
         });
+    },
+    backToProfile() {
+      this.$router.push('/profile')
     }
   },
   mounted() {
-    this.message = '';
     this.getevent(this.$route.params.id);
+  },
+  components: {
+    datetime: Datetime,
+    VueTagsInput
   }
 };
 </script>
 
 <style>
 .edit-form {
-  max-width: 300px;
+  max-width: 600px;
   margin: auto;
 }
 </style>

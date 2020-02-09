@@ -13,11 +13,14 @@ class EventDataService {
   }
 
   get(id) {
-    return axios.get(`/events/${id}`);
+    return axios.get(API_URL + `events/event/?id=${id}`, { headers: authHeader() });
   }
 
   create(data) {
     return axios.post(API_URL + "events/addEvent", data, {headers: authHeader()});
+  }
+  update(data) {
+    return axios.post(API_URL + "events/updateEvent", data, {headers: authHeader()});
   }
 
   getByTag(tag){
@@ -43,9 +46,6 @@ class EventDataService {
   }
   isEventTracked(eventId) {
     return axios.get(API_URL +`events/isTracked/?eventId=${eventId}`, {headers: authHeader()} );
-  }
-  update(id, data) {
-    return axios.put(`/events/${id}`, data);
   }
 
   delete(id) {
