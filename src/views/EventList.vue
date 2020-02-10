@@ -94,15 +94,11 @@
     </div>
     <div class="col-md-6">
       <div v-if="currentevent">
-        <h4>Event</h4>
+        <h4>
+          {{ currentevent.name }}
+          </h4>
         <div>
           <img :src="currentevent.imgUrl" class="img-fluid" />
-        </div>
-        <div>
-          <label>
-            <strong>Title:</strong>
-          </label>
-          {{ currentevent.name }}
         </div>
         <div>
           <label>
@@ -110,6 +106,12 @@
           </label>
           {{ formattedDate(currentevent.dateScheduled) }}
         </div>
+        <button
+         style="float:right;"
+          class="btn btn-outline-dark"
+          @click="trackEvent()">
+          {{ trackedButton }}</button>
+
         <div>
           <label>
             <strong>Organized by:</strong>
@@ -143,14 +145,6 @@
           {{ currentevent.category }}
         </div>
 
-        <button
-         style="float:right;"
-          v-if="currentevent.isTracked"
-          class="btn btn-outline-dark"
-          @click="untrackEvent()"
-        >Untrack event</button>
-
-        <button v-else class="btn btn-outline-dark" @click="trackEvent()">Track event</button>
       </div>
       <div v-else>
         <br />
@@ -174,7 +168,8 @@ export default {
       title: "",
       searchedTerm: "",
       placeholderSearch: "Search by Title",
-      searchBy: "Title"
+      searchBy: "Title",
+      trackedButton: "Track event"
     };
   },
   methods: {
@@ -236,9 +231,8 @@ export default {
       this.currentIndex = -1;
     },
 
+
     setActiveEvent(event, index) {
-      
-      this.currentevent = null;
        if (this.currentUser) {
         eventDataService
           .isEventTracked(event.id)
@@ -246,7 +240,12 @@ export default {
             this.currentevent = event;
             this.currentIndex = index;
             this.currentevent.isTracked = response.data  ;
-
+            if(this.currentevent.isTracked) {
+              this.trackedButton = "Untrack event"
+            }
+            else {
+              this.trackedButton = "Track event"
+            }
             console.log(response.data);
           })
           .catch(e => {
@@ -275,30 +274,34 @@ export default {
       }
     },
     trackEvent() {
-      eventDataService
-        .trackEvent({
-          id: this.currentevent.id
-        })
-        .then(response => {
-          console.log(response.data);
-        })
-        .catch(e => {
-          console.log(e);
-        });
-      this.setActiveEvent(this.currentevent, this.currentIndex);
-    },
-    untrackEvent() {
-      eventDataService
+      if(this.currentevent.isTracked) {
+        eventDataService
         .untrackEvent({
           id: this.currentevent.id
         })
         .then(response => {
           console.log(response.data);
+          this.currentevent.isTracked = false;
+          this.trackedButton = "Track event"
         })
         .catch(e => {
           console.log(e);
         });
-      this.setActiveEvent(this.currentevent, this.currentIndex);
+      }
+      else {
+        eventDataService
+        .trackEvent({
+          id: this.currentevent.id
+        })
+        .then(response => {
+          console.log(response.data);
+          this.currentevent.isTracked = true;
+          this.trackedButton ="Untrack event"
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      }
     },
     clearSearch() {
       this.refreshList();
