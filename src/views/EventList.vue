@@ -11,6 +11,19 @@
             :searchable="false"
           ></v-select>
         </div>
+        <div style="width:80%;" v-else-if="searchBy=='Location'">
+                <gmap-autocomplete class="form-control" v-on:place_changed="setAdressSearch">
+                    <template v-slot:input="slotProps">
+                        <v-text-field outlined
+                                      prepend-inner-icon="place"
+                                      placeholder="Location Of Event"
+                                      ref="input"
+                                      v-on:listeners="slotProps.listeners"
+                                      v-on:attrs="slotProps.attrs">
+                        </v-text-field>
+                    </template>
+        </gmap-autocomplete>
+        </div>
         <div v-else style="width:80%;">
           <input
             type="text"
@@ -71,6 +84,16 @@
             autocomplete="off"
             v-on:click="changeSearch('Date')"
           /> Date
+        </label>
+        <label class="btn btn-secondary">
+          <input
+            type="radio"
+            name="searchBy"
+            id="byLocation"
+            value="Location"
+            autocomplete="off"
+            v-on:click="changeSearch('Location')"
+          /> Location
         </label>
       </div>
     </div>
@@ -178,7 +201,8 @@ export default {
       searchedTerm: "",
       placeholderSearch: "Search by Title",
       searchBy: "Title",
-      trackedButton: "Track event"
+      trackedButton: "Track event",
+      locationSearchedId: ""
     };
   },
   methods: {
@@ -203,6 +227,16 @@ export default {
           console.log(e);
         });
     },
+    eventsByLocation(locationId) {
+      eventDataService
+      .getByLocation(locationId)
+      .then(response=> {
+        this.events =response.data;
+      })
+      .catch(e=> {
+        console.log(e);
+      })
+    },
     eventsByUser(username) {
       console.log("here");
        eventDataService
@@ -219,6 +253,7 @@ export default {
       this.searchBy = val;
       this.searchedTerm = "";
       this.placeholderSearch = "Search by " + val;
+      this.locationSearchedId = "";
     },
     retrieveevents() {
       eventDataService
@@ -281,6 +316,12 @@ export default {
       if (this.searchBy == "Category") {
         this.eventsByCategory(this.searchedTerm);
       }
+      if (this.searchBy == "Location") {
+        this.eventsByLocation(this.locationSearchedId);
+      }
+    },
+    setAdressSearch(place) {
+      this.locationSearchedId = place.place_id;
     },
     trackEvent() {
       if(this.currentevent.isTracked) {

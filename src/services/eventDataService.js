@@ -33,6 +33,9 @@ class EventDataService {
   getByUser(username) {
     return axios.get(API_URL + `events/search/byUser/${username}`);
   }
+  getByLocation(locationId){
+    return axios.get(API_URL + `events/search/byLocation?locationId=${locationId}`);
+  }
   findByTitle(title) {
     return axios.get(API_URL + `events/search/byTitle?title=${title}`);
   }
