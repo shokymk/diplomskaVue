@@ -38,6 +38,24 @@
           </label>
           {{ formattedDate(currentevent.dateScheduled) }}
         </div>
+        
+        <button style="float:right;" class="btn btn-outline-dark" @click="untrackEvent()" >Untrack event</button>
+      
+                <div>
+          <label>
+            <strong>Organized by:</strong>
+          </label>
+          <button style="margin-left:5px;" class="btn btn-info" @click="eventsByUser(currentevent.organizedBy)">
+              <i v-bind:class="'material-icons'">{{ currentevent.organizedBy }}</i>
+            </button>
+        </div>
+        
+        <div>
+          <label style="margin-right:5px;">
+            <strong>Event location:</strong>
+          </label>
+          <a :href="currentevent.location.mapUrl" target="_blank">{{ currentevent.location.name }}</a>
+        </div>
         <div>
           <label>
             <strong>Description:</strong>
@@ -63,8 +81,6 @@
           {{ currentevent.category }}
         </div>
         
-        <button class="btn btn-outline-dark" @click="untrackEvent()" >Untrack event</button>
-      
       </div>
       <div v-else>
         <br />

@@ -16,7 +16,7 @@ import {
   faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 import 'vue-select/dist/vue-select.css';
-
+import * as VueGoogleMaps from 'vue2-google-maps'
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
@@ -25,7 +25,13 @@ Vue.config.productionTip = false;
 Vue.use(VeeValidate);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.component('v-select', vSelect)
-
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCvyiNcC-MHEmWvBgzQKcxZvPk-YsjK4Ws',
+    libraries: 'places',
+    },
+ installComponents: true
+})
 new Vue({
   router,
   store,

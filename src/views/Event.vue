@@ -37,6 +37,22 @@
       </div>
 
       <div class="form-group">
+        <label for="name">Event location</label>
+        <br>
+        <gmap-autocomplete class="form-control" v-on:place_changed="getAddressData" :placeholder='location.name'>
+                    <template v-slot:input="slotProps">
+                        <v-text-field outlined
+                                      prepend-inner-icon="place"
+                                      placeholder="Location Of Event"
+                                      ref="input"
+                                      v-on:listeners="slotProps.listeners"
+                                      v-on:attrs="slotProps.attrs">
+                        </v-text-field>
+                    </template>
+        </gmap-autocomplete>
+      </div>
+
+      <div class="form-group">
         <label for="description">Description</label>
         <textarea
           class="form-control"
@@ -111,6 +127,7 @@ export default {
       },
       tag: "",
       tags:[],
+      location: null,
       submitted: false
     };
   },
@@ -124,7 +141,8 @@ export default {
             this.tags.push({
               "text" : element,
               "tiClasses" : ["ti-valid"]
-            })
+            });
+          this.location = this.currentEvent.location;
           });
         })
         .catch(e => {
@@ -143,6 +161,7 @@ export default {
         dateScheduled: this.currentEvent.dateScheduled,
         imgUrl: this.currentEvent.imgUrl,
         category: this.currentEvent.category,
+        location: this.location,
         tags: stringTags
       };
       eventDataService.update(data)
@@ -155,7 +174,14 @@ export default {
           console.log(e);
         });
     },
-
+    getAddressData(place) {
+      console.log(place);
+      this.location = {
+        "id" : place.place_id,
+        "mapUrl" : place.url,
+        "name" : place.name
+      };
+    },
     deleteEvent() {
       eventDataService.delete(this.currentEvent.id)
         .then(response => {

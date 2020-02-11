@@ -116,10 +116,19 @@
           <label>
             <strong>Organized by:</strong>
           </label>
-          <button style="margin-left:10px;" class="btn btn-info" @click="eventsByUser(currentevent.organizedBy)">
+          <button style="margin-left:5px;" class="btn btn-info" @click="eventsByUser(currentevent.organizedBy)">
               <i v-bind:class="'material-icons'">{{ currentevent.organizedBy }}</i>
             </button>
         </div>
+        
+        <div>
+          <label style="margin-right:5px;">
+            <strong>Event location:</strong>
+          </label>
+          <a :href="currentevent.location.mapUrl" target="_blank">{{ currentevent.location.name }}</a>
+        </div>
+
+
         <div>
           <label>
             <strong>Description:</strong>
